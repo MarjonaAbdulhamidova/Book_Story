@@ -92,5 +92,35 @@ class BookAdmin(admin.ModelAdmin):
     date_hierarchy = "created_at"
     ordering = ("-created_at",)
     readonly_fields = ("cover_preview", "created_at", "updated_at")
-
     autocomplete_fields = ["author", "publisher", "category"]
+
+    # --- 🛠 ETISHMAYOTGAN FUNKSIYALAR SHU YERDA QO'SHILDI: ---
+
+    @admin.display(description="Muqova")
+    def cover_preview(self, obj):
+        # Agar modelda rasm maydoni nomi 'cover' emas, 'cover_image' bo'lsa obj.cover_image deb o'zgartiring
+        if hasattr(obj, 'cover') and obj.cover:
+            return format_html(
+                '<img src="{}" style="height:60px; width:45px; object-fit:cover; border-radius:4px; box-shadow: 0 2px 4px rgba(0,0,0,0.15);" />',
+                obj.cover.url
+            )
+        elif hasattr(obj, 'cover_image') and obj.cover_image:
+            return format_html(
+                '<img src="{}" style="height:60px; width:45px; object-fit:cover; border-radius:4px; box-shadow: 0 2px 4px rgba(0,0,0,0.15);" />',
+                obj.cover_image.url
+            )
+        return "—"
+
+    @admin.display(description="Narxi")
+    def price_display(self, obj):
+        if hasattr(obj, 'price') and obj.price:
+            return f"{obj.price:,} so'm".replace(",", " ")
+        return "Bepul"
+
+    @admin.display(description="Omborda")
+    def stock_display(self, obj):
+        if hasattr(obj, 'stock'):
+            if obj.stock and obj.stock > 0:
+                return format_html('<span style="color: #2e7d32; font-weight: bold;">{} ta bor</span>', obj.stock)
+            return format_html('<span style="color: #c62828; font-weight: bold;">Tugagan</span>')
+        return "—"

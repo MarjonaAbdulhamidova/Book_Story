@@ -114,9 +114,13 @@ class Book(models.Model):
     title = models.CharField(
         max_length=255,
         db_index=True,
-        verbose_name="Book Title"
+        verbose_name="Book Title",
+        
     )
-
+    image = models.ImageField(upload_to='books/', 
+        null=True,
+        blank=True
+    )
     description = models.TextField(
         verbose_name="Description"
     )
